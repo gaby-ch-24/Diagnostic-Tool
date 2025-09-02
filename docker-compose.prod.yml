@@ -1,0 +1,75 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: diagnostic
+      POSTGRES_PASSWORD: diagnostic
+      POSTGRES_DB: diagnostic
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U diagnostic -d diagnostic"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.prod
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://diagnostic:diagnostic@postgres:5432/diagnostic?schema=public
+      REDIS_URL: redis://redis:6379
+      PORT: 8080
+      SCAN_MAX_LINKS: 800
+      SCAN_CONCURRENCY: 16
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: apps/worker/Dockerfile.prod
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://diagnostic:diagnostic@postgres:5432/diagnostic?schema=public
+      REDIS_URL: redis://redis:6379
+      SCAN_MAX_LINKS: 800
+      SCAN_CONCURRENCY: 16
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile.prod
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://localhost:8080
+      PORT: 3000
+    depends_on: [api]
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+volumes:
+  pgdata:
