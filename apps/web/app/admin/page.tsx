@@ -1,10 +1,18 @@
 'use client';
+
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+};
+
 import * as React from 'react';
 import { Box, Typography, Card, CardContent, Divider, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Skeleton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Select, MenuItem, FormControl, InputLabel, Slide } from '@mui/material';
 
 
 export default function AdminPage() {
-  const [users, setUsers] = React.useState([]);
+  const [users, setUsers] = React.useState<User[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState("");
 
@@ -95,9 +103,9 @@ export default function AdminPage() {
   }
 
   return (
-  <Box sx={{ minHeight: '80vh', background: '#fff', p: 3, borderRadius: 4 }}>
+    <Box sx={{ minHeight: '80vh', background: '#fff', p: 3, borderRadius: 4 }}>
       <Typography variant="h4" fontWeight={700} sx={{ mb: 2 }}>Admin Panel</Typography>
-  <Card sx={{ maxWidth: 900, mx: 'auto', mb: 4 }}>
+      <Card sx={{ maxWidth: 900, mx: 'auto', mb: 4 }}>
         <CardContent>
           <Typography variant="h6" fontWeight={600} sx={{ mb: 2 }}>User Management</Typography>
           <Divider sx={{ mb: 2 }} />
@@ -141,7 +149,7 @@ export default function AdminPage() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {users.map((user: any) => (
+                  {users.map((user) => (
                     <TableRow key={user.id}>
                       <TableCell>{user.id}</TableCell>
                       <TableCell>{user.name}</TableCell>

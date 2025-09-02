@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Box, Button, TextField, Typography, Alert, Link as MuiLink, CircularProgress, Paper } from "@mui/material";
+import { Box, Button, TextField, Typography, Alert, Link as MuiLink, CircularProgress } from "@mui/material";
 import Link from "next/link";
 
 export default function RegisterPage() {
@@ -34,23 +34,21 @@ export default function RegisterPage() {
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f3f4f6' }}>
-      <Paper elevation={6} sx={{ maxWidth: 400, width: '100%', p: 4, borderRadius: 4, bgcolor: '#fff', boxShadow: '0 8px 32px rgba(90,90,200,0.08)' }}>
-        <Typography variant="h4" fontWeight={700} mb={2} color="#222">Register</Typography>
-        <form onSubmit={handleRegister}>
-          <TextField label="Name" type="text" value={name} onChange={e => setName(e.target.value)} fullWidth required margin="normal" variant="filled" InputProps={{ style: { background: '#f3f4f6', color: '#222' } }} />
-          <TextField label="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} fullWidth required margin="normal" variant="filled" InputProps={{ style: { background: '#f3f4f6', color: '#222' } }} />
-          <TextField label="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} fullWidth required margin="normal" variant="filled" InputProps={{ style: { background: '#f3f4f6', color: '#222' } }} />
-          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2, py: 1.5, fontWeight: 700, fontSize: 18 }} disabled={loading}>
-            {loading ? <CircularProgress size={24} /> : "Register"}
-          </Button>
-        </form>
-        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-        {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
-        <Box mt={3} textAlign="center">
-          <MuiLink component={Link} href="/login" underline="hover" color="primary">Already have an account? Login</MuiLink>
-        </Box>
-      </Paper>
+  <Box sx={{ maxWidth: 400, mx: "auto", mt: 8, p: 3, bgcolor: "#fff", borderRadius: 0, boxShadow: 0 }}>
+      <Typography variant="h5" fontWeight={700} mb={2}>Register</Typography>
+      <form onSubmit={handleRegister}>
+        <TextField label="Name" type="text" value={name} onChange={e => setName(e.target.value)} fullWidth required margin="normal" />
+        <TextField label="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} fullWidth required margin="normal" />
+        <TextField label="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} fullWidth required margin="normal" />
+        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }} disabled={loading}>
+          {loading ? <CircularProgress size={24} /> : "Register"}
+        </Button>
+      </form>
+      {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+      {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
+      <Box mt={3} textAlign="center">
+        <MuiLink component={Link} href="/login" underline="hover">Already have an account? Login</MuiLink>
+      </Box>
     </Box>
   );
 }
